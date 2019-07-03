@@ -5,10 +5,10 @@
 
     <ImageView
         android:id="@+id/ivDisplay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="280dp"
+        android:layout_height="400dp"
         android:layout_gravity="center_vertical|center_horizontal"
-        android:scaleType="centerCrop" />
+        android:layout_marginTop="16dp"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -31,6 +31,22 @@
             android:layout_height="wrap_content"
             android:onClick="onConvertirGrises"
             android:text="Grises" />
+
+        <Button
+            android:id="@+id/btnSepia"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onConvertirSepia"
+            android:text="Sep" />
+
+        <Button
+            android:id="@+id/btnAddFrame"
+            style="?android:attr/buttonStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onAddFrame"
+            android:text="Marco" />
 
     </LinearLayout>
 
