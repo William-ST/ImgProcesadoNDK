@@ -13,6 +13,8 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -45,7 +47,7 @@ public class ImgProcesadoNDK extends AppCompatActivity {
 
     public native void convertirSepia(Bitmap bitmapIn, Bitmap bitmapOut);
 
-    public native void onAddFrame(Bitmap bitmapIn, Bitmap bitmapOut);
+    public native void onAddFrameC(Bitmap bitmapIn, Bitmap bitmapOut);
 
 
     @Override
@@ -77,9 +79,6 @@ public class ImgProcesadoNDK extends AppCompatActivity {
         if (currentBitmap != null)
             ivDisplay.setImageBitmap(currentBitmap);
 
-        if (checkPermissions())
-            dispatchTakePictureIntent();
-
         ivDisplay.post(new Runnable() {
             @Override
             public void run() {
@@ -90,12 +89,12 @@ public class ImgProcesadoNDK extends AppCompatActivity {
 
     }
 
-    public void onResetImagen(View v) {
+    public void onResetImagen() {
         Log.i(TAG, "Resetear Imagen");
         ivDisplay.setImageBitmap(currentBitmap);
     }
 
-    public void onConvertirGrises(View v) {
+    public void onConvertirGrises() {
         Log.i(TAG, "Conversion a escala de grises");
         bitmapGrises = Bitmap.createBitmap(currentBitmap.getWidth(),
                 currentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -103,7 +102,7 @@ public class ImgProcesadoNDK extends AppCompatActivity {
         ivDisplay.setImageBitmap(bitmapGrises);
     }
 
-    public void onConvertirSepia(View v) {
+    public void onConvertirSepia() {
         Log.i(TAG, "Conversion a sepia");
         bitmapSepia = Bitmap.createBitmap(currentBitmap.getWidth(),
                 currentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
@@ -111,11 +110,19 @@ public class ImgProcesadoNDK extends AppCompatActivity {
         ivDisplay.setImageBitmap(bitmapSepia);
     }
 
-    public void onAddFrame(View v) {
-        Log.i(TAG, "Agregar marco");
+    public void onAddFrameC() {
+        Log.i(TAG, "Agregar marco c");
         bitmapFrame = Bitmap.createBitmap(currentBitmap.getWidth(),
                 currentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        onAddFrame(currentBitmap, bitmapFrame);
+        onAddFrameC(currentBitmap, bitmapFrame);
+        ivDisplay.setImageBitmap(bitmapFrame);
+    }
+
+    public void onAddFrameJava() {
+        Log.i(TAG, "Agregar marco java");
+        bitmapFrame = Bitmap.createBitmap(currentBitmap.getWidth(),
+                currentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        onAddFrameC(currentBitmap, bitmapFrame);
         ivDisplay.setImageBitmap(bitmapFrame);
     }
 
@@ -135,6 +142,11 @@ public class ImgProcesadoNDK extends AppCompatActivity {
                 showMessage();
             }
         }
+    }
+
+    public void takePhoto(View view) {
+        if (checkPermissions())
+            dispatchTakePictureIntent();
     }
 
     private void dispatchTakePictureIntent() {
@@ -193,4 +205,33 @@ public class ImgProcesadoNDK extends AppCompatActivity {
         Toast.makeText(this, "Debes aceptar el permiso para utilizar la cámara", Toast.LENGTH_SHORT).show();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_original:
+                onResetImagen();
+                break;
+            case R.id.menu_gray:
+                onConvertirGrises();
+                break;
+            case R.id.menu_sepia:
+                onConvertirSepia();
+                break;
+            case R.id.menu_frame_c:
+                onAddFrameC();
+                break;
+            case R.id.menu_frame_java:
+                onAddFrameJava();
+                break;
+            default:
+                break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 }

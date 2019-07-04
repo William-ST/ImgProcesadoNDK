@@ -17,36 +17,12 @@
         android:orientation="horizontal">
 
         <Button
-            android:id="@+id/btnReset"
+            android:id="@+id/btn_take_photo"
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onResetImagen"
-            android:text="Original" />
-
-        <Button
-            android:id="@+id/btnConvert"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onConvertirGrises"
-            android:text="Grises" />
-
-        <Button
-            android:id="@+id/btnSepia"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onConvertirSepia"
-            android:text="Sep" />
-
-        <Button
-            android:id="@+id/btnAddFrame"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onAddFrame"
-            android:text="Marco" />
+            android:onClick="takePhoto"
+            android:text="@string/take_photo_action" />
 
     </LinearLayout>
 

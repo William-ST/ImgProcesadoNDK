@@ -151,7 +151,7 @@ Java_com_imgprocesadondk_ImgProcesadoNDK_convertirSepia(JNIEnv *env, jobject ins
 }
 
 JNIEXPORT void JNICALL
-Java_com_imgprocesadondk_ImgProcesadoNDK_onAddFrame(JNIEnv *env, jobject instance,
+Java_com_imgprocesadondk_ImgProcesadoNDK_onAddFrameC__Landroid_graphics_Bitmap_2Landroid_graphics_Bitmap_2(JNIEnv *env, jobject instance,
                                                      jobject bitmapcolor, jobject bitmapgris) {
     AndroidBitmapInfo infocolor;
     void *pixelscolor;
