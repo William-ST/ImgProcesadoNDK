@@ -6,4 +6,5 @@
     <string name="frame_c">Marco</string>
     <string name="frame_java">Marco 2</string>
     <string name="take_photo_action">Tomar foto</string>
+    <string name="sobel">Sobel</string>
 </resources>

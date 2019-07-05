@@ -7,12 +7,46 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
+#undef com_imgprocesadondk_ImgProcesadoNDK_REQUEST_TAKE_PHOTO
+#define com_imgprocesadondk_ImgProcesadoNDK_REQUEST_TAKE_PHOTO 1L
 /*
  * Class:     com_imgprocesadondk_ImgProcesadoNDK
  * Method:    convertirGrises
  * Signature: (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;)V
  */
 JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirGrises
+  (JNIEnv *, jobject, jobject, jobject);
+
+/*
+ * Class:     com_imgprocesadondk_ImgProcesadoNDK
+ * Method:    convertirSepia
+ * Signature: (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;)V
+ */
+JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirSepia
+  (JNIEnv *, jobject, jobject, jobject);
+
+/*
+ * Class:     com_imgprocesadondk_ImgProcesadoNDK
+ * Method:    onAddFrameC
+ * Signature: (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;)V
+ */
+JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_onAddFrameC
+  (JNIEnv *, jobject, jobject, jobject);
+
+/*
+ * Class:     com_imgprocesadondk_ImgProcesadoNDK
+ * Method:    callbackJavaMethod
+ * Signature: (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;)V
+ */
+JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_callbackJavaMethod
+  (JNIEnv *, jobject, jobject, jobject);
+
+/*
+ * Class:     com_imgprocesadondk_ImgProcesadoNDK
+ * Method:    convertirSobel
+ * Signature: (Landroid/graphics/Bitmap;Landroid/graphics/Bitmap;)V
+ */
+JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirSobel
   (JNIEnv *, jobject, jobject, jobject);
 
 #ifdef __cplusplus

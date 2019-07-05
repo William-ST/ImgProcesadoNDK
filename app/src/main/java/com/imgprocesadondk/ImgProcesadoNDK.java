@@ -24,11 +24,12 @@ import java.io.IOException;
 
 public class ImgProcesadoNDK extends AppCompatActivity {
 
-    private String TAG = "ImgProcesadoNDK";
+    private final static String TAG = ImgProcesadoNDK.class.getCanonicalName();
     private Bitmap currentBitmap = null;
     private Bitmap bitmapGrises = null;
     private Bitmap bitmapSepia = null;
     private Bitmap bitmapFrame = null;
+    private Bitmap bitmapSobel = null;
     private ImageView ivDisplay = null;
 
     static final int REQUEST_TAKE_PHOTO = 1;
@@ -49,6 +50,9 @@ public class ImgProcesadoNDK extends AppCompatActivity {
 
     public native void onAddFrameC(Bitmap bitmapIn, Bitmap bitmapOut);
 
+    public native void callbackJavaMethod(Bitmap bitmapIn, Bitmap bitmapOut);
+
+    public native void convertirSobel(Bitmap bitmapIn, Bitmap bitmapOut);
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -122,8 +126,16 @@ public class ImgProcesadoNDK extends AppCompatActivity {
         Log.i(TAG, "Agregar marco java");
         bitmapFrame = Bitmap.createBitmap(currentBitmap.getWidth(),
                 currentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
-        onAddFrameC(currentBitmap, bitmapFrame);
+        callbackJavaMethod(currentBitmap, bitmapFrame);
         ivDisplay.setImageBitmap(bitmapFrame);
+    }
+
+    public void onSobel() {
+        Log.i(TAG, "Sobel");
+        bitmapSobel = Bitmap.createBitmap(currentBitmap.getWidth(),
+                currentBitmap.getHeight(), Bitmap.Config.ARGB_8888);
+        convertirSobel(currentBitmap, bitmapSobel);
+        ivDisplay.setImageBitmap(bitmapSobel);
     }
 
     private void requestPermissions() {
@@ -229,9 +241,17 @@ public class ImgProcesadoNDK extends AppCompatActivity {
             case R.id.menu_frame_java:
                 onAddFrameJava();
                 break;
+            case R.id.menu_sobel:
+                onSobel();
+                break;
             default:
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public static boolean hayPixel(int x, int y) {
+        Log.d(TAG, "call java hayPixel x:y: "+x+":"+y);
+        return x%10 == y%10;
     }
 }

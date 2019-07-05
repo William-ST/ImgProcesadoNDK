@@ -15,9 +15,10 @@ typedef struct {
 } rgba;
 /*Conversion a grises por pixel*/
 JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirGrises
-(JNIEnv *env, jobject obj, jobject bitmapcolor, jobject bitmapgris) { AndroidBitmapInfo infocolor;
-void *pixelscolor;
-AndroidBitmapInfo infogris;
+(JNIEnv *env, jobject obj, jobject bitmapcolor, jobject bitmapgris) {
+    AndroidBitmapInfo infocolor;
+    void *pixelscolor;
+    AndroidBitmapInfo infogris;
     void *pixelsgris;
     int ret;
     int y;
@@ -69,7 +70,6 @@ AndroidBitmapInfo infogris;
     LOGI("unlocking pixels");
         AndroidBitmap_unlockPixels(env, bitmapcolor);
         AndroidBitmap_unlockPixels(env, bitmapgris);
-
 }
 
 JNIEXPORT void JNICALL
@@ -128,15 +128,15 @@ Java_com_imgprocesadondk_ImgProcesadoNDK_convertirSepia(JNIEnv *env, jobject ins
                     grisline[x].red = 255;
                 }
                 grisline[x].green = (line[x].red * .349) + (line[x].green * .686) + (line[x].blue * .168);
-                    valSepia = (line[x].red * .349) + (line[x].green * .686) + (line[x].blue * .168);
-                    if (valSepia > 255) {
-                        grisline[x].green = 255;
-                    }
-                        grisline[x].blue = (line[x].red * .272) + (line[x].green * .534) + (line[x].blue * .131);
-                        valSepia = (line[x].red * .272) + (line[x].green * .534) + (line[x].blue * .131);
-                        if (valSepia > 255) {
-                            grisline[x].blue = 255;
-                        }
+                valSepia = (line[x].red * .349) + (line[x].green * .686) + (line[x].blue * .168);
+                if (valSepia > 255) {
+                    grisline[x].green = 255;
+                }
+                grisline[x].blue = (line[x].red * .272) + (line[x].green * .534) + (line[x].blue * .131);
+                valSepia = (line[x].red * .272) + (line[x].green * .534) + (line[x].blue * .131);
+                if (valSepia > 255) {
+                    grisline[x].blue = 255;
+                }
                 grisline[x].alpha = line[x].alpha;
             }
             pixelscolor = (char *) pixelscolor + infocolor.stride;
@@ -205,6 +205,7 @@ Java_com_imgprocesadondk_ImgProcesadoNDK_onAddFrameC__Landroid_graphics_Bitmap_2
                 grisline[x].green = line[x].green ;
                 grisline[x].blue = line[x].blue ;
                 grisline[x].alpha = line[x].alpha;
+
                 if (y<=pixelFrame ){
                     grisline[x].red =   0;
                     grisline[x].green = 0 ;
@@ -237,7 +238,6 @@ Java_com_imgprocesadondk_ImgProcesadoNDK_onAddFrameC__Landroid_graphics_Bitmap_2
 
             }
 
-
             pixelscolor = (char *) pixelscolor + infocolor.stride;
             pixelsgris = (char *) pixelsgris + infogris.stride;
         }
@@ -247,4 +247,128 @@ Java_com_imgprocesadondk_ImgProcesadoNDK_onAddFrameC__Landroid_graphics_Bitmap_2
     LOGI("unlocking pixels");
     AndroidBitmap_unlockPixels(env, bitmapcolor);
     AndroidBitmap_unlockPixels(env, bitmapgris);
+}
+
+JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_callbackJavaMethod(JNIEnv *env, jobject thiz, jobject bitmapcolor, jobject bitmapgris) {
+    LOGI("callbackJavaMethod llamada!");
+    jclass clazz = (*env)->GetObjectClass(env, thiz);
+    if (!clazz) {
+        LOGE("callback_handler: FALLO object Class");
+        goto failure;
+    }
+    jmethodID method = (*env)->GetStaticMethodID(env, clazz, "hayPixel", "(II)Z");
+
+    if (!method) {
+        LOGE("callback_hand ler: FALLO metodo ID"); goto failure;
+    }
+    jboolean existPixel = (*env)->CallBooleanMethod(env, thiz, method, 5, 10);
+
+    LOGI("callbackJavaMethod existPixel: %d", existPixel);
+
+    AndroidBitmapInfo infocolor;
+        void *pixelscolor;
+        AndroidBitmapInfo infogris;
+        void *pixelsgris;
+        int ret;
+        int y;
+        int x;
+        LOGI("agregar marco");
+
+        if ((ret = AndroidBitmap_getInfo(env, bitmapcolor, &infocolor)) < 0) {
+            LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+            return;
+        }
+        if ((ret = AndroidBitmap_getInfo(env, bitmapgris, &infogris)) < 0) {
+            LOGE("AndroidBitmap_getInfo() failed ! error=%d", ret);
+            return;
+        }
+        LOGI("imagen color :: ancho %d;alto %d;avance %d;formato %d;flags %d",
+             infocolor.width, infocolor.height,
+             infocolor.stride, infocolor.format, infocolor.flags);
+        if (infocolor.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+            LOGE("Bitmap no es formato RGBA_8888 !");
+            return;
+        }
+
+        LOGI("imagen color :: ancho %d;alto %d;avance %d;formato %d;flags %d",
+             infogris.width, infogris.height, infogris.stride,
+             infogris.format, infogris.flags);
+        if (infogris.format != ANDROID_BITMAP_FORMAT_RGBA_8888) {
+            LOGE("Bitmap no es formato RGBA_8888 !");
+            return;
+        }
+
+        if ((ret = AndroidBitmap_lockPixels(env, bitmapcolor, &pixelscolor)) < 0) {
+            LOGE("AndroidBitmap_lockPixels() failed ! error=%d", ret);
+        }
+        if ((ret = AndroidBitmap_lockPixels(env,bitmapgris,&pixelsgris)) <0){
+            LOGE("AndroidBitmap_lockPixels() fallo ! error=%d", ret);
+        }
+
+        int color = 0;
+        if (!existPixel) {
+            color = 255;
+        }
+        int pixelFrame = 10;
+        for (y = 0; y < infocolor.height; y++) {
+            rgba *line = (rgba *) pixelscolor;
+            rgba *grisline = (rgba *) pixelsgris;
+            for (y = 0; y < infocolor.height; y++) {
+                rgba *line = (rgba *) pixelscolor;
+                rgba *grisline = (rgba *) pixelsgris;
+                for (x = 0; x < infocolor.width; x++) {
+                    grisline[x].red =   line[x].red;
+                    grisline[x].green = line[x].green ;
+                    grisline[x].blue = line[x].blue ;
+                    grisline[x].alpha = line[x].alpha;
+                    if (y<=pixelFrame ){
+                        grisline[x].red = color;
+                        grisline[x].green = color;
+                        grisline[x].blue = color;
+                        grisline[x].alpha = line[x].alpha;
+
+                    }
+                    if (y >= infocolor.height - pixelFrame ){
+                        grisline[x].red = color;
+                        grisline[x].green = color;
+                        grisline[x].blue = color;
+                        grisline[x].alpha = line[x].alpha;
+
+                    }
+
+                    if (x<=pixelFrame){
+                        grisline[x].red = color;
+                        grisline[x].green = color;
+                        grisline[x].blue = color;
+                        grisline[x].alpha = line[x].alpha;
+
+                    }
+                    if (x >= infocolor.width - pixelFrame ){
+                        grisline[x].red = color;
+                        grisline[x].green = color;
+                        grisline[x].blue = color;
+                        grisline[x].alpha = line[x].alpha;
+
+                    }
+
+                }
+
+
+                pixelscolor = (char *) pixelscolor + infocolor.stride;
+                pixelsgris = (char *) pixelsgris + infogris.stride;
+            }
+            pixelscolor = (char *) pixelscolor + infocolor.stride;
+            pixelsgris = (char *) pixelsgris + infogris.stride;
+        }
+        LOGI("unlocking pixels");
+        AndroidBitmap_unlockPixels(env, bitmapcolor);
+        AndroidBitmap_unlockPixels(env, bitmapgris);
+
+    failure: return;
+}
+
+JNIEXPORT void JNICALL Java_com_imgprocesadondk_ImgProcesadoNDK_convertirSobel(JNIEnv *env, jobject thiz, jobject bitmapcolor, jobject bitmapgris) {
+    LOGI("call sobel!");
+    //jobject bitmapgris = Java_com_imgprocesadondk_ImgProcesadoNDK_convertirGrises(JNIEnv *, jobject, jobject, jobject);
+    //LOGI("call sobel gray!");
 }
